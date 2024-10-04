@@ -9,7 +9,7 @@
 1. 使用桌面客户端导出数据，数据只勾选Private Groups和Private Channels(当然你想验公开群也可以一并勾选，建议把仅导出我的消息去掉)，导出格式选择机器可读JSON
 2. 进入导出文件夹，把`result.json`放置与`convert.py`同目录，运行`convert.py`(此时需要关注是不是全部都是您想要验证的频道和群组内容，如果里面存在其他内容，可以编辑`convert.py`的skip列表自行跳过) 获得`result_converted.json`
 3. 编辑`app.go` 设置机器人token和管理员的UID 并编译
-4. 将`result_converted.json`与编译出来的Golang APP放置于同一目录，运行即可
+4. 将`result_converted.json`更名为`data.json`与编译出来的Golang APP放置于同一目录，运行即可
 
 ## 验证原理
 
