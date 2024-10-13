@@ -1,0 +1,13 @@
+# weiba configuration
+# 2 modes to choose
+# 1. config, read this yaml file
+# 2. environment variable 'env', it is useful in passing credentials into container
+mode: "config"
+# env variable BOT_TOKEN
+bot_token: "{YOUR TELEGRAM BOT TOKEN}"
+# administrator UID, if you do not know your Telegram UID, please STFW.(specify -1 will disable this feature.)
+# env variable ADMIN_UID
+admin_uid: -1
+# if you do not modify this option in your convert.py, please DO NOT EDIT this field.
+# env variable TRANSFORM_DIGITS, this is optional(default 4)
+transform_digits: 4
