@@ -1,6 +1,6 @@
 # weiba
 
-## 一个简单的Telegram频道/群组入群验证解决方案
+## 不仅仅是一个简单的Telegram频道/群组入群/频验证解决方案
 
 ## 如何使用
 
@@ -10,6 +10,18 @@
 2. 进入导出文件夹，把`result.json`放置与`convert.py`同目录，运行`convert.py`(此时需要关注是不是全部都是您想要验证的频道和群组内容，如果里面存在其他内容，可以编辑`convert.py`的skip列表自行跳过) 获得`result_converted.json`
 3. 编辑`config.sample.yml` 设置机器人token和管理员的UID 修改为`config.yml`并与编译出来的Golang APP放置于同一目录
 4. 将`result_converted.json`更名为`data.json`与编译出来的Golang APP放置于同一目录，运行即可
+
+你也可以使用容器服务：
+
+```shell
+podman run -dit --name weibabot -v config.yml:/app/config.yml -v data.json:/app/data.json github.io/chi-net/weiba
+```
+
+## 其他的附加小功能
+
+1. 群组/频道白名单
+2. 检测群组/频道的加入退出情况并通知给管理员
+3. 频道附属讨论群组自动unpin频道发出的自动pin消息
 
 ## 验证原理
 
