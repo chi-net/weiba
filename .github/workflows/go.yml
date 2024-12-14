@@ -23,7 +23,7 @@ jobs:
           go-version-file: "go.mod"
 
       - name: Build project
-        run: go build . && mv weiba weiba-${{ github.ref }}
+        run: go build . && mv weiba weiba-${{ github.ref_name }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
