@@ -31,7 +31,7 @@ func HandleJoinRequest(ctx context.Context, b *bot.Bot, update *models.Update, c
 			adminMessage += "名称：" + update.ChatJoinRequest.Chat.Title + "\n"
 			adminMessage += "ID: " + strconv.FormatInt(update.ChatJoinRequest.Chat.ID, 10) + "\n"
 			adminMessage += "Username: " + update.ChatJoinRequest.Chat.Username + "\n"
-			adminMessage += "如果您确定这是您自己的频道/群组，请在 config.yml 的 chat_whitelist 一栏下添加如下内容：\n"
+			adminMessage += "如果您确定这是您自己的频道/群组，请在 config.yml 的 chat_whitelist 一栏下添加如下内容并重启程序：\n"
 			adminMessage += "- " + strconv.FormatInt(update.ChatJoinRequest.Chat.ID, 10)
 			if config.AdminUID != -1 {
 				b.SendMessage(ctx, &bot.SendMessageParams{
