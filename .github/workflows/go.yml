@@ -9,11 +9,11 @@ on:
 jobs:
   build:
     name: Multi-Platform Build
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [linux, windows, macos]
         arch: [amd64, arm64, 386]         # Architectures: 64-bit, ARM 64-bit, 32-bit
 
     steps:
@@ -34,7 +34,7 @@ jobs:
         GOARCH: ${{ matrix.arch }}
       run: |
         mkdir -p build/
-        OUTPUT_NAME="myapp-${{ matrix.os }}-${{ matrix.arch }}"
+        OUTPUT_NAME="weiba-${{ matrix.os }}-${{ matrix.arch }}"
         if [ "${{ matrix.os }}" == "windows" ]; then OUTPUT_NAME="$OUTPUT_NAME.exe"; fi
         go build -o build/$OUTPUT_NAME .
         echo "Built $OUTPUT_NAME"
