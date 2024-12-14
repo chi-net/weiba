@@ -19,7 +19,7 @@ func InfoHandler(ctx context.Context, b *bot.Bot, update *models.Update, config 
 	if update.Message.From.ID != config.AdminUID && config.AdminUID != -1 {
 		b.SendMessage(ctx, &bot.SendMessageParams{
 			ChatID: update.Message.Chat.ID,
-			Text:   "weibabot@canary - A bot which can process authentication of private groups and channels\nOpenSource: https://github.com/chi-net/weiba",
+			Text:   "weibabot@1.1 - A bot which can process authentication of private groups and channels\nOpenSource: https://github.com/chi-net/weiba",
 		})
 	} else {
 		var memStats runtime.MemStats
@@ -52,7 +52,7 @@ func InfoHandler(ctx context.Context, b *bot.Bot, update *models.Update, config 
 		if err != nil {
 			log.Fatalf("Error getting host info: %v", err)
 		}
-
+		
 		msg := "weibabot@canary - A bot which can process authentication of private groups and channels\nSystem Info:\n"
 		msg += "Host:" + hostInfo.Platform + "(Kernel:" + hostInfo.OS + " " + hostInfo.KernelVersion + ")\n"
 		msg += "CPU: " + cpuInfo[0].ModelName + "(" + strconv.Itoa(len(cpuInfo)) + ") " + strconv.FormatFloat(cpuInfo[0].Mhz/1000, 'f', 2, 64) + "GHz " + strconv.FormatFloat(cpuPercent[0], 'f', 2, 64) + "% Used\n"
