@@ -11,3 +11,19 @@ admin_uid: -1
 # if you do not modify this option in your convert.py, please DO NOT EDIT this field.
 # env variable TRANSFORM_DIGITS, this is optional(default 4)
 transform_digits: 4
+# A little hint feature: Enhanced monitor channel's members
+# If there is someone quitting your channel, you can get updates from the bot.
+# And when someone is joining your channel directly, you can also get informed.
+enhanced_monitor_channel_members: false
+# Chat whitelist!
+# You can specify any group and channels into this field and avoid illegal use of this bot
+# if the length of this array is 0, default no limit.[We DO NOT suggest you to do that!]
+# If you did not know the ids of your group, you can invite it to your groups and use /chatid to get this info.
+chat_whitelist:
+  - -1000000000000
+# some useful features:
+# unpin the group's channel pin automatically!
+# Please note that you should specify which group will be influenced.(The groups id is the same as the chat whitelist's)
+unpin_channel_pins: false
+unpin_channel_pins_groups:
+  - -100000000000
