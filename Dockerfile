@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Build the Go binary statically
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o weiba
+RUN CGO_ENABLED=0 go build -o weiba
 
 # Step 2: Create a lightweight final image using Alpine
 FROM alpine:latest
@@ -17,7 +17,7 @@ WORKDIR /app
 
 # Copy the statically compiled Go binary from the builder stage
 COPY --from=builder /app/weiba .
-COPY ./data.json /app/data.json
+COPY ./config.container.yml ./config.yml
 
 # Command to run the application
 CMD ["./weiba"]

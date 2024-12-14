@@ -34,23 +34,23 @@ func getEnv(key, defaultValue string) string {
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
-	
+
 	authmaps.Data = make(map[int64]int64)
 	authmaps.GroupIds = make(map[int64][]int64)
-	
+
 	// Read the file contents
 	byteValue, err := os.ReadFile("data.json")
 	byteValue2, err := os.ReadFile("config.yml")
-	
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	err = yaml.Unmarshal(byteValue2, &config)
 	if err != nil {
 		panic("Can not read config.yml! If you are using a container, please ensure your application's folder has config.yml")
 	}
-	
+
 	if config.Mode == "env" {
 		// in env mode, we automatically disabled whitelist mode, if you opened unpin channel posts feature, it will influence all groups joined in.
 		config.AdminUID, _ = strconv.ParseInt(getEnv("ADMIN_UID", "-1"), 10, 64)
@@ -62,18 +62,18 @@ func main() {
 		config.EnhancedMonitorChannelMembers, _ = strconv.ParseBool(getEnv("ENHANCED_MONITOR_CHANNEL_MEMBERS", "false"))
 		config.UnpinChannelPosts, _ = strconv.ParseBool(getEnv("UNPIN_CHANNEL_POSTS", "false"))
 	}
-	
+
 	// Unmarshal the JSON into the struct
 	err = json.Unmarshal(byteValue, &data)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	// Print the data
 	//for _, d := range data.Data {
 	//	fmt.Printf(strconv.FormatInt(d.ID, 10) + "\n")
 	//}
-	
+
 	opts := []bot.Option{
 		bot.WithDefaultHandler(handler),
 		bot.WithAllowedUpdates(bot.AllowedUpdates{
@@ -83,12 +83,12 @@ func main() {
 			"channel_post",
 		}),
 	}
-	
+
 	b, err := bot.New(config.BotToken, opts...)
 	if err != nil {
 		panic(err)
 	}
-	
+
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/info", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
 			core.InfoHandler(ctx, b, update, config)
@@ -97,7 +97,7 @@ func main() {
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
 			core.ChatIDHandler(ctx, b, update, config)
 		})
-	
+
 	b.Start(ctx)
 }
 
@@ -106,14 +106,14 @@ func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	if config.AdminUID != -1 && config.EnhancedMonitorChannelMembers && update.ChatMember != nil {
 		core.MonitorStatus(ctx, b, update, config)
 	}
-	
+
 	// handle ChatJoinRequests
 	if update.ChatJoinRequest != nil {
 		core.HandleJoinRequest(ctx, b, update, config, authmaps)
 	} else if update.Message != nil && update.Message.Chat.Type == models.ChatTypePrivate {
 		core.HandleAuthChallenge(ctx, b, update, config, authmaps, data)
 	}
-	
+
 	// handle Unpin Messages
 	if update.Message != nil && update.Message.SenderChat != nil && config.UnpinChannelPosts {
 		if update.Message.Chat.Type == models.ChatTypeSupergroup && update.Message.SenderChat.Type == models.ChatTypeChannel {
