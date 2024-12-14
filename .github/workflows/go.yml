@@ -1,49 +1,32 @@
-name: Build and Release Multi-Arch Go Application
+# .github/workflows/release.yml
+name: Build and release Go Project
 
 on:
-  workflow_dispatch:
   push:
-    # Publish semver tags as releases.
-    tags: ['*.*']
+    tags:
+      - "*"
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Multi-Platform Build
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        os: [linux, windows, macos]
-        arch: [amd64, arm64, 386]         # Architectures: 64-bit, ARM 64-bit, 32-bit
-
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ubuntu-latest
     steps:
-    # Step 1: Checkout the code
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # Step 2: Set up Go environment
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: "1.23"  # Replace with the desired Go version
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "go.mod"
 
-    # Step 3: Build for the specific OS and architecture
-    - name: Build for ${{ matrix.os }} ${{ matrix.arch }}
-      env:
-        GOOS: ${{ matrix.os }}
-        GOARCH: ${{ matrix.arch }}
-      run: |
-        mkdir -p build/
-        OUTPUT_NAME="weiba-${{ matrix.os }}-${{ matrix.arch }}"
-        if [ "${{ matrix.os }}" == "windows" ]; then OUTPUT_NAME="$OUTPUT_NAME.exe"; fi
-        go build -o build/$OUTPUT_NAME .
-        echo "Built $OUTPUT_NAME"
+      - name: Build project
+        run: go build . && mv weiba weiba-${{ github.ref }}
 
-    # Step 4: Upload all built binaries as release assets
-    - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./build/
-        asset_name: build
-        asset_content_type: application/octet-stream
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            weiba-${{ github.ref }}}
