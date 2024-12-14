@@ -9,11 +9,10 @@ on:
 jobs:
   build:
     name: Multi-Platform Build
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, windows-latest, macos-latest]
 
     strategy:
       matrix:
-        os: [linux, windows, darwin]       # Operating systems: Linux, Windows, macOS
         arch: [amd64, arm64, 386]         # Architectures: 64-bit, ARM 64-bit, 32-bit
 
     steps:
