@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     # Publish semver tags as releases.
-    tags: ['*.*.*']
+    tags: ['*.*']
 
 jobs:
   build:
