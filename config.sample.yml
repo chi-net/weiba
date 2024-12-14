@@ -24,6 +24,7 @@ chat_whitelist:
 # some useful features:
 # unpin the group's channel pin automatically!
 # Please note that you should specify which group will be influenced.(The groups id is the same as the chat whitelist's)
-unpin_channel_pins: false
-unpin_channel_pins_groups:
-  - -100000000000
+unpin_channel_posts: true
+unpin_channel_posts_groups:
+  - -10000000
+  - -1002287169809
