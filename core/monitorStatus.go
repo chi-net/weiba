@@ -2,17 +2,16 @@ package core
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
 )
 
 func MonitorStatus(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData) {
-	fmt.Println(update.ChatMember.NewChatMember.Member)
+	// fmt.Println(update.ChatMember.NewChatMember.Member)
 	// fmt.Println(update.ChatMember.NewChatMember.Banned)
-	fmt.Println(update.ChatMember.From)
-	fmt.Println(update.ChatMember.Chat)
+	// fmt.Println(update.ChatMember.From)
+	// fmt.Println(update.ChatMember.Chat)
 	chatMember := update.ChatMember
 	chatType := "频道"
 	if chatMember.Chat.Type != "channel" {

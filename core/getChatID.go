@@ -18,6 +18,11 @@ func ChatIDHandler(ctx context.Context, b *bot.Bot, update *models.Update, confi
 	} else {
 		msg += "You are not the admin of this bot."
 	}
+	for _, val := range config.Whitelists.UnpinChannelPosts {
+		if val == update.Message.Chat.ID {
+			msg += "\nUnpin feature enabled."
+		}
+	}
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
 		Text:   msg,

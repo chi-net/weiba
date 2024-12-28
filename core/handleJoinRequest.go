@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
@@ -11,10 +10,10 @@ import (
 func HandleJoinRequest(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData, authmaps AuthMaps) {
 
 	// Checking whitelist...
-	if len(config.ChatWhitelist) != 0 {
+	if len(config.Whitelists.GicAuth) != 0 {
 		flag := false
-		for _, val := range config.ChatWhitelist {
-			fmt.Println(val)
+		for _, val := range config.Whitelists.GicAuth {
+			// fmt.Println(val)
 			if val == update.ChatJoinRequest.Chat.ID {
 				flag = true
 			}
@@ -31,7 +30,7 @@ func HandleJoinRequest(ctx context.Context, b *bot.Bot, update *models.Update, c
 			adminMessage += "名称：" + update.ChatJoinRequest.Chat.Title + "\n"
 			adminMessage += "ID: " + strconv.FormatInt(update.ChatJoinRequest.Chat.ID, 10) + "\n"
 			adminMessage += "Username: " + update.ChatJoinRequest.Chat.Username + "\n"
-			adminMessage += "如果您确定这是您自己的频道/群组，请在 config.yml 的 chat_whitelist 一栏下添加如下内容并重启程序：\n"
+			adminMessage += "如果您确定这是您自己的频道/群组，请在 config.yml 的 whitelist，gic_auth: 一栏下添加如下内容并重启程序：\n"
 			adminMessage += "- " + strconv.FormatInt(update.ChatJoinRequest.Chat.ID, 10)
 			if config.AdminUID != -1 {
 				b.SendMessage(ctx, &bot.SendMessageParams{
@@ -45,7 +44,7 @@ func HandleJoinRequest(ctx context.Context, b *bot.Bot, update *models.Update, c
 
 	//fmt.Println(update.ChatJoinRequest)
 	authmaps.Data[update.ChatJoinRequest.UserChatID] = update.ChatJoinRequest.Chat.ID
-	authmaps.Steps[update.ChatJoinRequest.UserChatID] = 0
+	authmaps.Steps[update.ChatJoinRequest.UserChatID] = 1
 
 	requestFrom := update.ChatJoinRequest.From
 	joinChat := update.ChatJoinRequest.Chat

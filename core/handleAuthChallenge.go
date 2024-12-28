@@ -12,7 +12,7 @@ func HandleAuthChallenge(ctx context.Context, b *bot.Bot, update *models.Update,
 	chatid := update.Message.Chat.ID
 	if ok, _ := authmaps.Data[chatid]; ok != 0 {
 		// The user has begun authentication process
-		if authmaps.Steps[chatid] == 1 {
+		if authmaps.Steps[chatid] == 2 {
 			for i := 0; i < len(authmaps.GroupIds[chatid]); i++ {
 				// fmt.Println(data.Data[userAuthGroupIds[chatid][i]].Data[userAuthGroupMessages[chatid][i]].Text)
 				encoded := strings.Split(data.Data[authmaps.GroupIds[chatid][i]].Data[authmaps.GroupMessages[chatid][i]], " ")[1]
@@ -66,7 +66,7 @@ func HandleAuthChallenge(ctx context.Context, b *bot.Bot, update *models.Update,
 				Text:   message,
 			})
 
-			authmaps.Steps[update.Message.Chat.ID] = 1
+			authmaps.Steps[update.Message.Chat.ID] = 2
 			message = "10个链接如下，请逐个点击，直到寻找到您可以访问的频道或群组，并将其文本全文复制至此。\n"
 			message += "请注意：如果您无法访问这些链接的内容，您可以随意输入一个内容以结束验证进程并稍后再次点击申请重试。"
 			for i := 0; i <= 10; i++ {

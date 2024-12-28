@@ -1,30 +1,49 @@
 # weiba configuration
 # 2 modes to choose
 # 1. config, read this yaml file
-# 2. environment variable 'env', it is useful in passing credentials into container
+# 2. environment variable 'env', it is useful in passing credentials into container(Partial support)
 mode: "config"
 # env variable BOT_TOKEN
 bot_token: "{YOUR TELEGRAM BOT TOKEN}"
-# administrator UID, if you do not know your Telegram UID, please STFW.(specify -1 will disable this feature.)
+# administrator's Telegram UID, if you do not know your Telegram UID, please STFW.(specify -1 will disable this feature.)
 # env variable ADMIN_UID
 admin_uid: -1
+# This field is served for `gic_auth`
 # if you do not modify this option in your convert.py, please DO NOT EDIT this field.
 # env variable TRANSFORM_DIGITS, this is optional(default 4)
 transform_digits: 4
-# A little hint feature: Enhanced monitor channel's members
-# If there is someone quitting your channel, you can get updates from the bot.
-# And when someone is joining your channel directly, you can also get informed.
-enhanced_monitor_channel_members: false
-# Chat whitelist!
-# You can specify any group and channels into this field and avoid illegal use of this bot
-# if the length of this array is 0, default no limit.[We DO NOT suggest you to do that!]
-# If you did not know the ids of your group, you can invite it to your groups and use /chatid to get this info.
-chat_whitelist:
-  - -1000000000000
-# some useful features:
-# unpin the group's channel pin automatically!
-# Please note that you should specify which group will be influenced.(The groups id is the same as the chat whitelist's)
-unpin_channel_posts: true
-unpin_channel_posts_groups:
-  - -10000000
-  - -1002287169809
+# Now We use features field to manage feature enable.
+# You can edit each feature's whitelist under the whitelists field.
+features:
+  # We added GIC_Auth as an optional feature now!
+  # if you want to enable it, you can see README to generate data.json and place it in the same menu of the executable.
+  # If this option is disabled, it
+  gic_auth: false
+  # A little hint feature: Enhanced monitor channel/group's subscribers/members
+  # If there is someone quitting your channel/group, you can get updates from the bot.
+  # And when someone is joining your channel/group directly, you can also get informed.
+  monitor_members: false
+  # unpin the group's channel pin automatically!
+  # Please note that you should specify which group will be influenced.(If the field is empty, it won't take any effect.)
+  unpin_channel_posts: false
+  # anonymous chat
+  # If you are seeking for solutions like livegram, it is a good alternative for livegram since it's an opensource project.
+  # If this feature enabled, you can use /chat to chat with administrator.
+  # You should specify admin_uid field if you enable this feature.
+  # Administrator can simply reply that message sent to them to reply user messages and chat.
+  anonymous_chat: false
+  # Debug feature
+  # If you want to receive more debuggable messages, please open this!
+  # You should specify admin_uid field if you enable this feature.
+  debug: true
+
+# You can get it via bot's command /chatid in any group, or manually check it in admin's response.
+# If the field is empty, it will automatically take it as no whitelist, I DO NOT recommend you to do that!
+# Except unpin_channel_posts, if there is no group id specified, it won't take any effect.
+whitelists:
+  gic_auth:
+    - -1000000000000
+  monitor_members:
+    - -1000000000000
+  unpin_channel_posts:
+    - -1000000000000

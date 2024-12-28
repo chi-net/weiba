@@ -37,18 +37,18 @@ func main() {
 
 	authmaps.Data = make(map[int64]int64)
 	authmaps.GroupIds = make(map[int64][]int64)
+	authmaps.ChatOpened = make(map[int64]bool)
 
-	// Read the file contents
-	byteValue, err := os.ReadFile("data.json")
+	// Read configuration.
 	byteValue2, err := os.ReadFile("config.yml")
 
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	err = yaml.Unmarshal(byteValue2, &config)
 	if err != nil {
-		panic("Can not read config.yml! If you are using a container, please ensure your application's folder has config.yml")
+		panic(err)
 	}
 
 	if config.Mode == "env" {
@@ -59,21 +59,27 @@ func main() {
 			panic("BotToken is not defined in environmental variables! Stopping this application.")
 		}
 		config.TransformDigits, _ = strconv.Atoi(getEnv("TRANSFORM_DIGITS", "-1"))
-		config.EnhancedMonitorChannelMembers, _ = strconv.ParseBool(getEnv("ENHANCED_MONITOR_CHANNEL_MEMBERS", "false"))
-		config.UnpinChannelPosts, _ = strconv.ParseBool(getEnv("UNPIN_CHANNEL_POSTS", "false"))
+		config.Features.MonitorMembers, _ = strconv.ParseBool(getEnv("MONITOR_MEMBERS", "false"))
+		config.Features.UnpinChannelPosts, _ = strconv.ParseBool(getEnv("UNPIN_CHANNEL_POSTS", "false"))
+		config.Features.GicAuth, _ = strconv.ParseBool(getEnv("GIC_AUTH", "false"))
+		config.Features.Debug, _ = strconv.ParseBool(getEnv("DEBUG", "false"))
+		config.Features.AnonymousChat, _ = strconv.ParseBool(getEnv("ANONYMOUS_CHAT", "false"))
 	}
 
-	// Unmarshal the JSON into the struct
-	err = json.Unmarshal(byteValue, &data)
-	if err != nil {
-		log.Fatal(err)
+	if config.Features.GicAuth {
+		byteValue, err := os.ReadFile("data.json")
+		// Unmarshal the JSON into the struct
+		err = json.Unmarshal(byteValue, &data)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	// Print the data
-	//for _, d := range data.Data {
-	//	fmt.Printf(strconv.FormatInt(d.ID, 10) + "\n")
-	//}
+	if (config.Features.AnonymousChat || config.Features.Debug) && config.AdminUID == -1 {
+		panic("You don't set any administrator UID for features that needs it!")
+	}
 
+	// initialize the bot.
 	opts := []bot.Option{
 		bot.WithDefaultHandler(handler),
 		bot.WithAllowedUpdates(bot.AllowedUpdates{
@@ -84,11 +90,13 @@ func main() {
 		}),
 	}
 
+	// create the bot instance.
 	b, err := bot.New(config.BotToken, opts...)
 	if err != nil {
 		panic(err)
 	}
 
+	// register commands
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/info", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
 			core.InfoHandler(ctx, b, update, config)
@@ -97,31 +105,56 @@ func main() {
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
 			core.ChatIDHandler(ctx, b, update, config)
 		})
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/chat", bot.MatchTypeExact,
+		func(ctx context.Context, b *bot.Bot, update *models.Update) {
+			core.OpenChatHandler(ctx, b, update, config, authmaps)
+		})
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/close", bot.MatchTypeExact,
+		func(ctx context.Context, b *bot.Bot, update *models.Update) {
+			core.CloseChatHandler(ctx, b, update, config, authmaps)
+		})
 
+	// start the bot
 	b.Start(ctx)
 }
 
 func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
-	// checkout channel monintor status
-	if config.AdminUID != -1 && config.EnhancedMonitorChannelMembers && update.ChatMember != nil {
+	// checkout channel monitor status
+	if config.AdminUID != -1 && config.Features.MonitorMembers && update.ChatMember != nil {
 		core.MonitorStatus(ctx, b, update, config)
 	}
 
 	// handle ChatJoinRequests
 	if update.ChatJoinRequest != nil {
-		core.HandleJoinRequest(ctx, b, update, config, authmaps)
-	} else if update.Message != nil && update.Message.Chat.Type == models.ChatTypePrivate {
-		core.HandleAuthChallenge(ctx, b, update, config, authmaps, data)
+		if config.Features.GicAuth {
+			core.HandleJoinRequest(ctx, b, update, config, authmaps)
+		} else {
+			msg := "[Debug] Detected chat join request but you don't enable this feature yet.\n"
+			msg += "If you want to enable it, please configure it in config.yml."
+			core.SendDebugMessage(msg, ctx, b, config)
+		}
+	}
+	if update.Message != nil && update.Message.Chat.Type == models.ChatTypePrivate {
+		//fmt.Println(authmaps.Steps[update.Message.Chat.ID])
+		if authmaps.Steps[update.Message.Chat.ID] == 1 || authmaps.Steps[update.Message.Chat.ID] == 2 {
+			core.HandleAuthChallenge(ctx, b, update, config, authmaps, data)
+		} else {
+			core.HandleMessage(ctx, b, update, config, authmaps)
+		}
 	}
 
 	// handle Unpin Messages
-	if update.Message != nil && update.Message.SenderChat != nil && config.UnpinChannelPosts {
+	if update.Message != nil && update.Message.SenderChat != nil && config.Features.UnpinChannelPosts {
 		if update.Message.Chat.Type == models.ChatTypeSupergroup && update.Message.SenderChat.Type == models.ChatTypeChannel {
-			for _, val := range config.UnpinChannelPostsGroups {
+			for _, val := range config.Whitelists.UnpinChannelPosts {
 				if val == update.Message.Chat.ID {
-					core.HandleChannelPosts(ctx, b, update)
+					core.HandleChannelPosts(ctx, b, update, config)
 				}
 			}
+		} else {
+			msg := "[Debug] Detected channel posted in chat but you don't enable Unpin Messages in this group yet.\n"
+			msg += "If you want to enable it, please configure it in config.yml."
+			core.SendDebugMessage(msg, ctx, b, config)
 		}
 	}
 }
