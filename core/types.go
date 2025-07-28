@@ -29,6 +29,8 @@ type ConfigurationFeaturesData struct {
 	UnpinChannelPosts bool `yaml:"unpin_channel_posts"`
 	AnonymousChat     bool `yaml:"anonymous_chat"`
 	Debug             bool `yaml:"debug"`
+	Tietie            bool `yaml:"tietie"`
+	Waifu             bool `yaml:"waifu"`
 }
 
 type ConfigurationWhitelistData struct {

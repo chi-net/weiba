@@ -1,0 +1,55 @@
+package core
+
+import (
+	"context"
+	"fmt"
+	"github.com/go-telegram/bot"
+	"github.com/go-telegram/bot/models"
+	"strconv"
+	"strings"
+)
+
+func HandleTietie(ctx context.Context, b *bot.Bot, update *models.Update) {
+	message := update.Message
+	chat := message.Chat
+	sender := message.From
+	// group tietie feature
+	// example:
+	// user1: hi!
+	// user2: /贴
+	// bot: 'user1' 贴了 'user2'!
+	// fmt.Println(message.Text)
+	if message.Text[0] == '/' {
+		i := 0
+		for message.Text[i] == '/' {
+			i += 1
+		}
+		receive := strings.SplitN(message.Text[i:], " ", 2)
+		msg := "[" + bot.EscapeMarkdown(sender.FirstName+" "+sender.LastName) + "](tg://user?id=" + strconv.FormatInt(sender.ID, 10) + ") "
+		if len(receive) == 2 {
+			msg += receive[0] + " "
+		} else if len(receive) == 1 {
+			msg += receive[0] + "了" + " "
+		}
+		if message.ReplyToMessage != nil {
+			msg += "[" + bot.EscapeMarkdown(message.ReplyToMessage.From.FirstName+" "+message.ReplyToMessage.From.LastName) + "](tg://user?id=" + strconv.FormatInt(message.ReplyToMessage.From.ID, 10) + ")"
+			if len(receive) == 2 {
+				msg += receive[1] + "\\!"
+			} else {
+				msg += "\\!"
+			}
+		} else {
+			msg += "自己\\!"
+		}
+		fmt.Println(msg)
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID:    chat.ID,
+			Text:      msg,
+			ParseMode: models.ParseModeMarkdown,
+			ReplyParameters: &models.ReplyParameters{
+				MessageID: message.ID,
+				ChatID:    chat.ID,
+			},
+		})
+	}
+}
