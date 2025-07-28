@@ -143,7 +143,7 @@ func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
 		}
 	}
 
-	if update.Message != nil && (update.Message.Chat.Type == models.ChatTypeGroup || update.Message.Chat.Type == models.ChatTypeSupergroup) {
+	if update.Message.Text != "" && (update.Message.Chat.Type == models.ChatTypeGroup || update.Message.Chat.Type == models.ChatTypeSupergroup) {
 		if config.Features.Tietie {
 			core.HandleTietie(ctx, b, update)
 		}
