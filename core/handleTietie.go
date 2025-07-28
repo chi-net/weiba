@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
@@ -41,7 +40,7 @@ func HandleTietie(ctx context.Context, b *bot.Bot, update *models.Update) {
 		} else {
 			msg += "自己\\!"
 		}
-		fmt.Println(msg)
+		// fmt.Println(msg)
 		b.SendMessage(ctx, &bot.SendMessageParams{
 			ChatID:    chat.ID,
 			Text:      msg,

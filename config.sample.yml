@@ -32,6 +32,13 @@ features:
   # You should specify admin_uid field if you enable this feature.
   # Administrator can simply reply that message sent to them to reply user messages and chat.
   anonymous_chat: false
+  # tietie feature
+  # when you send "/[content]" in a chat that bot exists, it will reply you [sender] [content] [reply].
+  # It is normally opened.
+  tietie: true
+  # waifu feature
+  # you can choose your wife randomly with this simple "/waifu" console.
+  waifu: false
   # Debug feature
   # If you want to receive more debuggable messages, please open this!
   # You should specify admin_uid field if you enable this feature.
