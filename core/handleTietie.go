@@ -31,6 +31,10 @@ func HandleTietie(ctx context.Context, b *bot.Bot, update *models.Update) {
 		}
 		receive := strings.SplitN(message.Text[i:], " ", 2)
 		msg := "[" + bot.EscapeMarkdown(sender.FirstName+" "+sender.LastName) + "](tg://user?id=" + strconv.FormatInt(sender.ID, 10) + ") "
+		matched, _ = regexp.MatchString(pattern, receive[0])
+		if matched && message.Text[1] != '/' {
+			return
+		}
 		if len(receive) == 2 {
 			msg += receive[0] + " "
 		} else if len(receive) == 1 {
