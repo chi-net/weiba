@@ -1,4 +1,4 @@
-package core
+package types
 
 // for data.json
 
@@ -37,6 +37,11 @@ type ConfigurationWhitelistData struct {
 	GicAuth           []int64 `yaml:"gic_auth"`
 	MonitorMembers    []int64 `yaml:"monitor_members"`
 	UnpinChannelPosts []int64 `yaml:"unpin_channel_posts"`
+}
+
+type ConfigurationWhiteListMonitorMembersData struct {
+	Id   int64    `yaml:"id"`
+	Tags []string `yaml:"tags"`
 }
 
 // for cache maps.

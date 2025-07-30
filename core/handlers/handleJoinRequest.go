@@ -1,13 +1,14 @@
-package core
+package handlers
 
 import (
 	"context"
+	"github.com/chi-net/weiba/core/types"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
 )
 
-func HandleJoinRequest(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData, authmaps AuthMaps) {
+func HandleJoinRequest(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData, authmaps types.AuthMaps) {
 
 	// Checking whitelist...
 	if len(config.Whitelists.GicAuth) != 0 {

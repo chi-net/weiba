@@ -1,13 +1,14 @@
-package core
+package handlers
 
 import (
 	"context"
+	"github.com/chi-net/weiba/core/types"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
 )
 
-func MonitorStatus(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData) {
+func MonitorStatus(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData) {
 	// fmt.Println(update.ChatMember.NewChatMember.Member)
 	// fmt.Println(update.ChatMember.NewChatMember.Banned)
 	// fmt.Println(update.ChatMember.From)

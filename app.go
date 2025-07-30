@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/chi-net/weiba/core"
+	"github.com/chi-net/weiba/core/handlers"
+	"github.com/chi-net/weiba/core/types"
+	"github.com/chi-net/weiba/core/utils"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"gopkg.in/yaml.v3"
@@ -13,15 +15,15 @@ import (
 	"strconv"
 )
 
-var authmaps = core.AuthMaps{
+var authmaps = types.AuthMaps{
 	Data:          make(map[int64]int64),
 	GroupIds:      make(map[int64][]int64),
 	GroupMessages: make(map[int64][]int64),
 	Steps:         make(map[int64]int64),
 }
 
-var data core.ImportedGICAuthData
-var config core.YmlConfigurationData
+var data types.ImportedGICAuthData
+var config types.YmlConfigurationData
 
 func getEnv(key, defaultValue string) string {
 	value := os.Getenv(key)
@@ -99,19 +101,19 @@ func main() {
 	// register commands
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/info", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
-			core.InfoHandler(ctx, b, update, config)
+			handlers.InfoHandler(ctx, b, update, config)
 		})
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/chatid", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
-			core.ChatIDHandler(ctx, b, update, config)
+			handlers.ChatIDHandler(ctx, b, update, config)
 		})
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/chat", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
-			core.OpenChatHandler(ctx, b, update, config, authmaps)
+			handlers.OpenChatHandler(ctx, b, update, config, authmaps)
 		})
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/close", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
-			core.CloseChatHandler(ctx, b, update, config, authmaps)
+			handlers.CloseChatHandler(ctx, b, update, config, authmaps)
 		})
 
 	// start the bot
@@ -121,31 +123,31 @@ func main() {
 func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	// checkout channel monitor status
 	if config.AdminUID != -1 && config.Features.MonitorMembers && update.ChatMember != nil {
-		core.MonitorStatus(ctx, b, update, config)
+		handlers.MonitorStatus(ctx, b, update, config)
 	}
 
 	// handle ChatJoinRequests
 	if update.ChatJoinRequest != nil {
 		if config.Features.GicAuth {
-			core.HandleJoinRequest(ctx, b, update, config, authmaps)
+			handlers.HandleJoinRequest(ctx, b, update, config, authmaps)
 		} else {
 			msg := "[Debug] Detected chat join request but you don't enable this feature yet.\n"
 			msg += "If you want to enable it, please configure it in config.yml."
-			core.SendDebugMessage(msg, ctx, b, config)
+			utils.SendDebugMessage(msg, ctx, b, config)
 		}
 	}
 	if update.Message != nil && update.Message.Chat.Type == models.ChatTypePrivate {
 		//fmt.Println(authmaps.Steps[update.Message.Chat.ID])
 		if authmaps.Steps[update.Message.Chat.ID] == 1 || authmaps.Steps[update.Message.Chat.ID] == 2 {
-			core.HandleAuthChallenge(ctx, b, update, config, authmaps, data)
+			handlers.HandleAuthChallenge(ctx, b, update, config, authmaps, data)
 		} else {
-			core.HandleMessage(ctx, b, update, config, authmaps)
+			handlers.HandleMessage(ctx, b, update, config, authmaps)
 		}
 	}
 
 	if update.Message != nil && update.Message.Text != "" && (update.Message.Chat.Type == models.ChatTypeGroup || update.Message.Chat.Type == models.ChatTypeSupergroup) {
 		if config.Features.Tietie {
-			core.HandleTietie(ctx, b, update)
+			handlers.HandleTietie(ctx, b, update)
 		}
 	}
 
@@ -154,13 +156,13 @@ func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
 		if update.Message.Chat.Type == models.ChatTypeSupergroup && update.Message.SenderChat.Type == models.ChatTypeChannel {
 			for _, val := range config.Whitelists.UnpinChannelPosts {
 				if val == update.Message.Chat.ID {
-					core.HandleChannelPosts(ctx, b, update, config)
+					handlers.HandleChannelPosts(ctx, b, update, config)
 				}
 			}
 		} else {
 			msg := "[Debug] Detected channel posted in chat but you don't enable Unpin Messages in this group yet.\n"
 			msg += "If you want to enable it, please configure it in config.yml."
-			core.SendDebugMessage(msg, ctx, b, config)
+			utils.SendDebugMessage(msg, ctx, b, config)
 		}
 	}
 }

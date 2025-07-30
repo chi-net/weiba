@@ -1,20 +1,22 @@
-package core
+package handlers
 
 import (
 	"context"
+	"github.com/chi-net/weiba/core/types"
+	"github.com/chi-net/weiba/core/utils"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
 )
 
-func HandleMessage(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData, authmaps AuthMaps) {
+func HandleMessage(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData, authmaps types.AuthMaps) {
 	message := update.Message
 	chat := message.Chat
 	senderid := message.From.ID
 	sender := message.From
 	if config.Features.AnonymousChat {
 		if senderid == config.AdminUID && message.ReplyToMessage != nil {
-			replyto := getUIDinMessage(message.ReplyToMessage.Text)
+			replyto := utils.GetUIDinMessage(message.ReplyToMessage.Text)
 			if authmaps.ChatOpened[replyto] {
 				b.CopyMessage(ctx, &bot.CopyMessageParams{
 					ChatID:     replyto,

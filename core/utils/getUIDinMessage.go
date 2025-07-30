@@ -1,11 +1,11 @@
-package core
+package utils
 
 import (
 	"regexp"
 	"strconv"
 )
 
-func getUIDinMessage(content string) int64 {
+func GetUIDinMessage(content string) int64 {
 	// Define the regex pattern to match UID
 	re := regexp.MustCompile(`UID:(\d+)`)
 

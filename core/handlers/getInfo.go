@@ -1,8 +1,9 @@
-package core
+package handlers
 
 import (
 	"context"
 	"fmt"
+	"github.com/chi-net/weiba/core/types"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"github.com/shirou/gopsutil/cpu"
@@ -15,7 +16,7 @@ import (
 	"time"
 )
 
-func InfoHandler(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData) {
+func InfoHandler(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData) {
 	if update.Message.From.ID != config.AdminUID && config.AdminUID != -1 {
 		b.SendMessage(ctx, &bot.SendMessageParams{
 			ChatID: update.Message.Chat.ID,

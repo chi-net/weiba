@@ -1,13 +1,14 @@
-package core
+package handlers
 
 import (
 	"context"
+	"github.com/chi-net/weiba/core/types"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
 )
 
-func OpenChatHandler(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData, authmaps AuthMaps) {
+func OpenChatHandler(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData, authmaps types.AuthMaps) {
 	chatid := update.Message.Chat.ID
 	user := update.Message.From
 	if authmaps.ChatOpened[chatid] {

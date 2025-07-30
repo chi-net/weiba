@@ -1,13 +1,14 @@
-package core
+package handlers
 
 import (
 	"context"
+	"github.com/chi-net/weiba/core/types"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
 )
 
-func ChatIDHandler(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData) {
+func ChatIDHandler(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData) {
 	msg := "Chat Information\n"
 	msg += "ChatID: " + strconv.FormatInt(update.Message.Chat.ID, 10) + "\n"
 	msg += "SenderID: " + strconv.FormatInt(update.Message.From.ID, 10) + "\n"

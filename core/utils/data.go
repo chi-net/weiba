@@ -1,15 +1,16 @@
-package core
+package utils
 
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"github.com/chi-net/weiba/core/types"
 	"math"
 	"math/rand"
 	"strconv"
 	"time"
 )
 
-func decode(from string) uint64 {
+func Decode(from string) uint64 {
 	result := uint64(0)
 	strlist := "abcdefghijklmnopqrstuvwxyz!@#$ABCDEFGHIJKLMNOPQRSTUVWXYZ%^&*1234567890()-=_+[]{}|\\:;<>?,./`~"
 
@@ -33,7 +34,7 @@ func decode(from string) uint64 {
 	return result
 }
 
-func check(msg string, encoded string, config YmlConfigurationData) bool {
+func Check(msg string, encoded string, config types.YmlConfigurationData) bool {
 	// Convert string to a slice of runes
 	var runes []rune
 	for _, r := range msg {
@@ -51,10 +52,10 @@ func check(msg string, encoded string, config YmlConfigurationData) bool {
 	result := hashInt % modulus
 	//fmt.Println(hashInt)
 	//fmt.Println(result)
-	return result == decode(encoded)
+	return result == Decode(encoded)
 }
 
-func generate(data ImportedGICAuthData) (int64, int64) {
+func Generate(data types.ImportedGICAuthData) (int64, int64) {
 	source := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(source) // Create a new Rand instance
 	num := r.Int63n(int64(len(data.Data)))

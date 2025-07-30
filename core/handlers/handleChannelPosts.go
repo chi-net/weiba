@@ -1,12 +1,14 @@
-package core
+package handlers
 
 import (
 	"context"
+	"github.com/chi-net/weiba/core/types"
+	"github.com/chi-net/weiba/core/utils"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 )
 
-func HandleChannelPosts(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData) {
+func HandleChannelPosts(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData) {
 	msg := "[Debug] Detected channel posted in chat and we unpinned it for you.\n"
 	_, err := b.UnpinChatMessage(ctx, &bot.UnpinChatMessageParams{
 		ChatID:    update.Message.Chat.ID,
@@ -16,5 +18,5 @@ func HandleChannelPosts(ctx context.Context, b *bot.Bot, update *models.Update, 
 		msg += "It returned an error:" + err.Error()
 	}
 
-	SendDebugMessage(msg, ctx, b, config)
+	utils.SendDebugMessage(msg, ctx, b, config)
 }

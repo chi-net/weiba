@@ -1,14 +1,16 @@
-package core
+package handlers
 
 import (
 	"context"
+	"github.com/chi-net/weiba/core/types"
+	"github.com/chi-net/weiba/core/utils"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"strconv"
 	"strings"
 )
 
-func HandleAuthChallenge(ctx context.Context, b *bot.Bot, update *models.Update, config YmlConfigurationData, authmaps AuthMaps, data ImportedGICAuthData) {
+func HandleAuthChallenge(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData, authmaps types.AuthMaps, data types.ImportedGICAuthData) {
 	chatid := update.Message.Chat.ID
 	if ok, _ := authmaps.Data[chatid]; ok != 0 {
 		// The user has begun authentication process
@@ -17,7 +19,7 @@ func HandleAuthChallenge(ctx context.Context, b *bot.Bot, update *models.Update,
 				// fmt.Println(data.Data[userAuthGroupIds[chatid][i]].Data[userAuthGroupMessages[chatid][i]].Text)
 				encoded := strings.Split(data.Data[authmaps.GroupIds[chatid][i]].Data[authmaps.GroupMessages[chatid][i]], " ")[1]
 
-				if check(update.Message.Text, encoded, config) {
+				if utils.Check(update.Message.Text, encoded, config) {
 					b.SendMessage(ctx, &bot.SendMessageParams{
 						ChatID: chatid,
 						Text:   "验证成功，喜欢您来，欢迎加入！",
@@ -70,11 +72,11 @@ func HandleAuthChallenge(ctx context.Context, b *bot.Bot, update *models.Update,
 			message = "10个链接如下，请逐个点击，直到寻找到您可以访问的频道或群组，并将其文本全文复制至此。\n"
 			message += "请注意：如果您无法访问这些链接的内容，您可以随意输入一个内容以结束验证进程并稍后再次点击申请重试。"
 			for i := 0; i <= 10; i++ {
-				num, num2 := generate(data)
+				num, num2 := utils.Generate(data)
 				authmaps.GroupMessages[chatid] = append(authmaps.GroupMessages[chatid], num2)
 				authmaps.GroupIds[chatid] = append(authmaps.GroupIds[chatid], num)
 				parts := strings.Split(data.Data[num].Data[num2], " ")
-				message += "\nhttps://t.me/c/" + strconv.FormatInt(data.Data[num].ID, 10) + "/" + strconv.FormatUint(decode(parts[0]), 10)
+				message += "\nhttps://t.me/c/" + strconv.FormatInt(data.Data[num].ID, 10) + "/" + strconv.FormatUint(utils.Decode(parts[0]), 10)
 			}
 			b.SendMessage(ctx, &bot.SendMessageParams{
 				ChatID: update.Message.Chat.ID,
