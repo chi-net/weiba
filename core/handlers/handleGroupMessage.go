@@ -15,7 +15,10 @@ func HandleGroupMessage(ctx context.Context, b *bot.Bot, update *models.Update, 
 	message := update.Message
 	chat := message.Chat
 	senderid := message.From.ID
-	title := message.From.FirstName + " " + message.From.LastName
+	title := message.From.FirstName
+	if message.From.LastName != "" {
+		title += " " + message.From.LastName
+	}
 	if message.SenderChat != nil {
 		senderid = message.SenderChat.ID
 		title = message.SenderChat.Title
