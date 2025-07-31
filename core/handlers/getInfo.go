@@ -20,7 +20,7 @@ func InfoHandler(ctx context.Context, b *bot.Bot, update *models.Update, config 
 	if update.Message.From.ID != config.AdminUID && config.AdminUID != -1 {
 		b.SendMessage(ctx, &bot.SendMessageParams{
 			ChatID: update.Message.Chat.ID,
-			Text:   "weibabot@1.1.1 - A bot which can process authentication of private groups and channels\nOpenSource: https://github.com/chi-net/weiba",
+			Text:   "weibabot@1.1.2 - A bot which can process authentication of private groups and channels\nOpenSource: https://github.com/chi-net/weiba",
 		})
 	} else {
 		var memStats runtime.MemStats

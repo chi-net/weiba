@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Build the Go binary statically
-RUN CGO_ENABLED=0 go build -o weiba
+RUN apk add build-base gcc && CGO_ENABLED=1 go build -o weiba
 
 # Step 2: Create a lightweight final image using Alpine
 FROM alpine:latest

@@ -43,6 +43,18 @@ features:
   # If you want to receive more debuggable messages, please open this!
   # You should specify admin_uid field if you enable this feature.
   debug: true
+  # If you want to open ranking system, your data will be recorded in sqlite database.
+  ranking: true
+
+# ranking section[You can specify categories in the future?]
+ranking:
+  global: true # enable global ranking
+  features:
+    # detect '卖菜'
+    cai: true
+    # detect 'xm'
+    xm: true
+  category:
 
 ai:
   # If you should use AI features, you must fill in this field.
