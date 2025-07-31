@@ -7,5 +7,5 @@ import (
 
 var (
 	mu  sync.RWMutex
-	sql gorm.DB
+	sql *gorm.DB
 )

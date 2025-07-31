@@ -1,17 +1,5 @@
 package types
 
-// for data.json
-
-type ImportedGICAuthData struct {
-	LastUpdate int            `json:"lastupdate"`
-	Data       []gicGroupData `json:"data"`
-}
-
-type gicGroupData struct {
-	ID   int64    `json:"i"`
-	Data []string `json:"d"`
-}
-
 // for configutation
 
 type YmlConfigurationData struct {
@@ -22,6 +10,7 @@ type YmlConfigurationData struct {
 	Features        ConfigurationFeaturesData  `yaml:"features"`
 	Whitelists      ConfigurationWhitelistData `yaml:"whitelists"`
 	AI              ConfigurationAIData        `yaml:"ai"`
+	Ranking         ConfigurationRankingData   `yaml:"ranking"`
 }
 
 type ConfigurationFeaturesData struct {
@@ -32,12 +21,14 @@ type ConfigurationFeaturesData struct {
 	Debug             bool `yaml:"debug"`
 	Tietie            bool `yaml:"tietie"`
 	Waifu             bool `yaml:"waifu"`
+	Ranking           bool `yaml:"ranking"`
 }
 
 type ConfigurationWhitelistData struct {
 	GicAuth           []int64 `yaml:"gic_auth"`
 	MonitorMembers    []int64 `yaml:"monitor_members"`
 	UnpinChannelPosts []int64 `yaml:"unpin_channel_posts"`
+	Ranking           []int64 `yaml:"ranking"`
 }
 
 type ConfigurationWhiteListMonitorMembersData struct {
@@ -49,17 +40,18 @@ type ConfigurationAIData struct {
 	GeminiAPIKey string `yaml:"gemini_api_key"`
 }
 
-// for cache maps.
+type ConfigurationRankingData struct {
+	Global   bool                               `yaml:"global"`
+	Features ConfigurationRankingFeaturesData   `yaml:"features"`
+	Category ConfigurationRankingCategoriesData `yaml:"categories"`
+}
 
-type AuthMaps struct {
-	// user <-> auth channel
-	Data map[int64]int64
-	// user <-> 10 group ids
-	GroupIds map[int64][]int64
-	// user <-> 10 group message ids
-	GroupMessages map[int64][]int64
-	// user <-> challenge steps
-	Steps map[int64]int64
-	// user <-> if open chat tunnel
-	ChatOpened map[int64]bool
+type ConfigurationRankingFeaturesData struct {
+	Cai bool `yaml:"cai"`
+	Xm  bool `yaml:"xm"`
+}
+
+type ConfigurationRankingCategoriesData struct {
+	Name     string   `yaml:"name"`
+	Triggers []string `yaml:"triggers"`
 }

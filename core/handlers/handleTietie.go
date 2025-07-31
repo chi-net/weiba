@@ -20,7 +20,7 @@ func HandleTietie(ctx context.Context, b *bot.Bot, update *models.Update) {
 	// bot: 'user1' 贴了 'user2'!
 	// fmt.Println(message.Text)
 	if message.Text[0] == '/' {
-		pattern := `^[a-zA-Z0-9/\\]+$`
+		pattern := `^[a-zA-Z0-9/\\@]+$`
 		matched, _ := regexp.MatchString(pattern, message.Text)
 		if matched && message.Text[1] != '/' {
 			return

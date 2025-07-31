@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/chi-net/weiba/core/handlers"
+	"github.com/chi-net/weiba/core/store"
 	"github.com/chi-net/weiba/core/types"
 	"github.com/chi-net/weiba/core/utils"
 	"github.com/go-telegram/bot"
@@ -68,6 +69,7 @@ func main() {
 		config.Features.AnonymousChat, _ = strconv.ParseBool(getEnv("ANONYMOUS_CHAT", "false"))
 		config.Features.Tietie, _ = strconv.ParseBool(getEnv("TIETIE", "true"))
 		config.Features.Waifu, _ = strconv.ParseBool(getEnv("WAIFU", "false"))
+		config.Features.Ranking, _ = strconv.ParseBool(getEnv("RANKING", "false"))
 	}
 
 	if config.Features.GicAuth {
@@ -81,6 +83,10 @@ func main() {
 
 	if (config.Features.AnonymousChat || config.Features.Debug) && config.AdminUID == -1 {
 		panic("You don't set any administrator UID for features that needs it!")
+	}
+
+	if config.Features.Ranking {
+		store.Init()
 	}
 
 	//cont := context.Background()
@@ -129,6 +135,10 @@ func main() {
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
 			handlers.ChatIDHandler(ctx, b, update, config)
 		})
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/ranking", bot.MatchTypeExact,
+		func(ctx context.Context, b *bot.Bot, update *models.Update) {
+			handlers.GetRankingHandler(ctx, b, update, config)
+		})
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/chat", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
 			handlers.OpenChatHandler(ctx, b, update, config, authmaps)
@@ -167,9 +177,12 @@ func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
 		}
 	}
 
-	if update.Message != nil && update.Message.Text != "" && (update.Message.Chat.Type == models.ChatTypeGroup || update.Message.Chat.Type == models.ChatTypeSupergroup) {
-		if config.Features.Tietie {
+	if update.Message != nil && (update.Message.Chat.Type == models.ChatTypeGroup || update.Message.Chat.Type == models.ChatTypeSupergroup) {
+		if config.Features.Tietie && update.Message.Text != "" {
 			handlers.HandleTietie(ctx, b, update)
+		}
+		if config.Features.Ranking {
+			handlers.HandleGroupMessage(ctx, b, update, config)
 		}
 	}
 
