@@ -66,6 +66,8 @@ func main() {
 		config.Features.GicAuth, _ = strconv.ParseBool(getEnv("GIC_AUTH", "false"))
 		config.Features.Debug, _ = strconv.ParseBool(getEnv("DEBUG", "false"))
 		config.Features.AnonymousChat, _ = strconv.ParseBool(getEnv("ANONYMOUS_CHAT", "false"))
+		config.Features.Tietie, _ = strconv.ParseBool(getEnv("TIETIE", "true"))
+		config.Features.Waifu, _ = strconv.ParseBool(getEnv("WAIFU", "false"))
 	}
 
 	if config.Features.GicAuth {
@@ -80,6 +82,26 @@ func main() {
 	if (config.Features.AnonymousChat || config.Features.Debug) && config.AdminUID == -1 {
 		panic("You don't set any administrator UID for features that needs it!")
 	}
+
+	//cont := context.Background()
+	//// The client gets the API key from the environment variable `GEMINI_API_KEY`.
+	//client, err := genai.NewClient(cont, &genai.ClientConfig{
+	//	APIKey: config.AI.GeminiAPIKey,
+	//})
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+	//result, err := client.Models.GenerateContent(
+	//	cont,
+	//	"gemini-2.5-flash",
+	//	genai.Text("Hello"),
+	//	nil,
+	//)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//fmt.Println(result.Text())
 
 	// initialize the bot.
 	opts := []bot.Option{

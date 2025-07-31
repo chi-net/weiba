@@ -21,6 +21,7 @@ type YmlConfigurationData struct {
 	TransformDigits int                        `yaml:"transform_digits"`
 	Features        ConfigurationFeaturesData  `yaml:"features"`
 	Whitelists      ConfigurationWhitelistData `yaml:"whitelists"`
+	AI              ConfigurationAIData        `yaml:"ai"`
 }
 
 type ConfigurationFeaturesData struct {
@@ -42,6 +43,10 @@ type ConfigurationWhitelistData struct {
 type ConfigurationWhiteListMonitorMembersData struct {
 	Id   int64    `yaml:"id"`
 	Tags []string `yaml:"tags"`
+}
+
+type ConfigurationAIData struct {
+	GeminiAPIKey string `yaml:"gemini_api_key"`
 }
 
 // for cache maps.

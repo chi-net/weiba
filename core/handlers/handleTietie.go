@@ -41,7 +41,7 @@ func HandleTietie(ctx context.Context, b *bot.Bot, update *models.Update) {
 			msg += receive[0] + "了" + " "
 		}
 		if message.ReplyToMessage != nil {
-			msg += "[" + bot.EscapeMarkdown(message.ReplyToMessage.From.FirstName+" "+message.ReplyToMessage.From.LastName) + "](tg://user?id=" + strconv.FormatInt(message.ReplyToMessage.From.ID, 10) + ")"
+			msg += "[" + bot.EscapeMarkdown(message.ReplyToMessage.Chat.Title) + "](tg://user?id=" + strconv.FormatInt(message.ReplyToMessage.From.ID, 10) + ")"
 			if len(receive) == 2 {
 				msg += receive[1] + "\\!"
 			} else {
@@ -67,7 +67,7 @@ func HandleTietie(ctx context.Context, b *bot.Bot, update *models.Update) {
 		}
 		receive := strings.SplitN(message.Text[i:], " ", 2)
 		msg := "[" + bot.EscapeMarkdown(sender.FirstName+" "+sender.LastName) + "](tg://user?id=" + strconv.FormatInt(sender.ID, 10) + ") 被 "
-		msg += "[" + bot.EscapeMarkdown(message.ReplyToMessage.From.FirstName+" "+message.ReplyToMessage.From.LastName) + "](tg://user?id=" + strconv.FormatInt(message.ReplyToMessage.From.ID, 10) + ")"
+		msg += "[" + bot.EscapeMarkdown(message.ReplyToMessage.Chat.Title) + "](tg://user?id=" + strconv.FormatInt(message.ReplyToMessage.From.ID, 10) + ")"
 		msg += receive[0] + "了" + " "
 
 		b.SendMessage(ctx, &bot.SendMessageParams{

@@ -44,6 +44,11 @@ features:
   # You should specify admin_uid field if you enable this feature.
   debug: true
 
+ai:
+  # If you should use AI features, you must fill in this field.
+  # Your gemini API key, you can get it in https://aistudio.google.com/
+  gemini_api_key: "your api key here"
+
 # You can get it via bot's command /chatid in any group, or manually check it in admin's response.
 # If the field is empty, it will automatically take it as no whitelist, I DO NOT recommend you to do that!
 # Except unpin_channel_posts, if there is no group id specified, it won't take any effect.
