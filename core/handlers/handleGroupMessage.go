@@ -39,7 +39,8 @@ func HandleGroupMessage(ctx context.Context, b *bot.Bot, update *models.Update, 
 					if message.Sticker.FileUniqueID == "AgAD6QkAAqSCAAFX" || // yufox trashbin
 						message.Sticker.FileUniqueID == "AgAD8gsAApMaeVc" || // suzume trashbin
 						message.Sticker.FileUniqueID == "AgADtAADuDulNA" || // wo
-						message.Sticker.FileUniqueID == "AgAD6AUAAgGeUVY" { // xiaoxinmiao wocai
+						message.Sticker.FileUniqueID == "AgAD6AUAAgGeUVY" || // xiaoxinmiao wocai
+						message.Sticker.FileUniqueID == "AgADswADuDulNA" { // arcaea nin
 						store.RecordRanking(senderid, chat.ID, "cai")
 					}
 				}
@@ -49,8 +50,7 @@ func HandleGroupMessage(ctx context.Context, b *bot.Bot, update *models.Update, 
 					store.RecordRanking(senderid, chat.ID, "xm")
 				}
 				if message.Sticker != nil {
-					if message.Sticker.FileUniqueID == "AgADhhcAAs1rgFU" || // suzume xmsl
-						message.Sticker.FileUniqueID == "AgADswADuDulNA" { // nin
+					if message.Sticker.FileUniqueID == "AgADhhcAAs1rgFU" { // suzume xmsl
 						store.RecordRanking(senderid, chat.ID, "xm")
 					}
 				}
