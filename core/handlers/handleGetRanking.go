@@ -27,23 +27,25 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "global"), 10) + "\n"
 				result := store.GetRanking("global")
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + "(" + strconv.FormatInt(val.Id, 10) + ")水了" + strconv.FormatInt(val.Count, 10) + "条!\n"
+					message += strconv.Itoa(i+1) + ". " + val.Name + "水了" + strconv.FormatInt(val.Count, 10) + "条!\n"
 				}
+				message += "\n"
 			}
 			if config.Ranking.Features.Cai {
 				message += "卖菜排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "cai"), 10) + "\n"
 				result := store.GetRanking("cai")
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + "(" + strconv.FormatInt(val.Id, 10) + ")卖了" + strconv.FormatInt(val.Count, 10) + "次菜!\n"
+					message += strconv.Itoa(i+1) + ". " + val.Name + "卖了" + strconv.FormatInt(val.Count, 10) + "次菜!\n"
 				}
+				message += "\n"
 			}
 			if config.Ranking.Features.Xm {
 				message += "羡慕排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "xm"), 10) + "\n"
 				result := store.GetRanking("xm")
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + "(" + strconv.FormatInt(val.Id, 10) + ")xm了" + strconv.FormatInt(val.Count, 10) + "次!\n"
+					message += strconv.Itoa(i+1) + ". " + val.Name + "xm了" + strconv.FormatInt(val.Count, 10) + "次!\n"
 				}
 			}
 			b.SendMessage(ctx, &bot.SendMessageParams{
