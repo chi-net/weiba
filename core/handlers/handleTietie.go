@@ -13,8 +13,12 @@ func HandleTietie(ctx context.Context, b *bot.Bot, update *models.Update) {
 	message := update.Message
 	chat := message.Chat
 	sender := message.From
-	replytitle := message.ReplyToMessage.From.FirstName + " " + message.ReplyToMessage.From.LastName
-	replyid := message.ReplyToMessage.From.ID
+	replytitle := "自己"
+	replyid := sender.ID
+	if message.ReplyToMessage != nil {
+		replytitle = message.ReplyToMessage.From.FirstName + " " + message.ReplyToMessage.From.LastName
+		replyid = message.ReplyToMessage.From.ID
+	}
 	if message.ReplyToMessage.SenderChat != nil {
 		replytitle = message.ReplyToMessage.SenderChat.Title
 		replyid = message.ReplyToMessage.SenderChat.ID

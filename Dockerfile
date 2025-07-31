@@ -17,7 +17,6 @@ WORKDIR /app
 
 # Copy the statically compiled Go binary from the builder stage
 COPY --from=builder /app/weiba .
-COPY ./config.container.yml ./config.yml
 
 # Command to run the application
 CMD ["./weiba"]
