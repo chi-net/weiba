@@ -137,7 +137,11 @@ func main() {
 		})
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/ranking", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {
-			handlers.GetRankingHandler(ctx, b, update, config)
+			handlers.GetRankingHandler(ctx, b, update, config, 10)
+		})
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/rankingall", bot.MatchTypeExact,
+		func(ctx context.Context, b *bot.Bot, update *models.Update) {
+			handlers.GetRankingHandler(ctx, b, update, config, -1)
 		})
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/chat", bot.MatchTypeExact,
 		func(ctx context.Context, b *bot.Bot, update *models.Update) {

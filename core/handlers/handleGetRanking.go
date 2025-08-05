@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData) {
+func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData, count int) {
 	message := update.Message
 	chat := message.Chat
 	senderid := message.From.ID
@@ -25,27 +25,27 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 			if config.Ranking.Global {
 				message += "水群排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "global"), 10) + "\n"
-				result := store.GetRanking("global")
+				result := store.GetRanking("global", chat.ID, count)
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + ":" + strconv.FormatInt(val.Count, 10) + "条\n"
+					message += strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n"
 				}
 				message += "\n"
 			}
 			if config.Ranking.Features.Cai {
 				message += "卖菜排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "cai"), 10) + "\n"
-				result := store.GetRanking("cai")
+				result := store.GetRanking("cai", chat.ID, count)
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + ":" + strconv.FormatInt(val.Count, 10) + "次\n"
+					message += strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "次\n"
 				}
 				message += "\n"
 			}
 			if config.Ranking.Features.Xm {
 				message += "羡慕排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "xm"), 10) + "\n"
-				result := store.GetRanking("xm")
+				result := store.GetRanking("xm", chat.ID, count)
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + ":" + strconv.FormatInt(val.Count, 10) + "次\n"
+					message += strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "次\n"
 				}
 			}
 			b.SendMessage(ctx, &bot.SendMessageParams{
