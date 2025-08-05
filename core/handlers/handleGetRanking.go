@@ -27,7 +27,11 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "global"), 10) + "\n"
 				result := store.GetRanking("global", chat.ID, count)
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n"
+					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n")
+					if i == 0 {
+						message += "**"
+					}
+					message += "> " + refmsg
 				}
 				message += "\n"
 			}
@@ -36,7 +40,11 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "cai"), 10) + "\n"
 				result := store.GetRanking("cai", chat.ID, count)
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "次\n"
+					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n")
+					if i == 0 {
+						message += "**"
+					}
+					message += "> " + refmsg
 				}
 				message += "\n"
 			}
@@ -45,12 +53,17 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "xm"), 10) + "\n"
 				result := store.GetRanking("xm", chat.ID, count)
 				for i, val := range result {
-					message += strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "次\n"
+					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n")
+					if i == 0 {
+						message += "**"
+					}
+					message += "> " + refmsg
 				}
 			}
 			b.SendMessage(ctx, &bot.SendMessageParams{
-				ChatID: chat.ID,
-				Text:   message,
+				ChatID:    chat.ID,
+				Text:      message,
+				ParseMode: models.ParseModeMarkdown,
 			})
 		}
 	}
