@@ -55,13 +55,14 @@ func UpdateUsername(Userid int64, Name string) {
 }
 
 // If pass -1, get all ranking data.
-func GetRanking(Name string, ChatId int64, Top int) []types.RankingList {
+func GetRanking(Name string, ChatId int64, Top int) ([]types.RankingList, types.RankingData) {
 	mu.RLock()
 	defer mu.RUnlock()
 	var rankings []types.DBTableRanking
+	var data types.RankingData
 	result := sql.Where("name = ? AND chat_id = ?", Name, ChatId).Find(&rankings)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil
+		return nil, types.RankingData{}
 	} else {
 		sort.Slice(rankings, func(i, j int) bool {
 			return rankings[i].Count > rankings[j].Count
@@ -78,14 +79,16 @@ func GetRanking(Name string, ChatId int64, Top int) []types.RankingList {
 					Count: ranking.Count,
 					Id:    ranking.UserId,
 				})
+				data.TotalUsers += 1
+				data.TotalMessages += ranking.Count
 			}
 		}
 		if Top == -1 {
-			return res
+			return res, data
 		} else if len(res) > Top {
-			return res[:Top]
+			return res[:Top], data
 		} else {
-			return res
+			return res, data
 		}
 	}
 }

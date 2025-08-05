@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/chi-net/weiba/core/store"
 	"github.com/chi-net/weiba/core/types"
+	"github.com/chi-net/weiba/core/utils"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
-	"strconv"
 )
 
 func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, config types.YmlConfigurationData, count int) {
@@ -25,52 +25,20 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 			if config.Ranking.Global {
 				message += "水群排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "global"), 10) + "\n"
-				result := store.GetRanking("global", chat.ID, count)
-				for i, val := range result {
-					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条")
-					if i == 0 {
-						message += "**"
-					}
-					message += "> " + refmsg
-					if i == len(result)-1 {
-						message += "||"
-					}
-					message += "\n"
-				}
-				message += "\n"
+				result, count := store.GetRanking("global", chat.ID, count)
+				message += utils.GetRankingMessage(result, count)
 			}
 			if config.Ranking.Features.Cai {
 				message += "卖菜排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "cai"), 10) + "\n"
-				result := store.GetRanking("cai", chat.ID, count)
-				for i, val := range result {
-					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条")
-					if i == 0 {
-						message += "**"
-					}
-					message += "> " + refmsg
-					if i == len(result)-1 {
-						message += "||"
-					}
-					message += "\n"
-				}
-				message += "\n"
+				result, count := store.GetRanking("cai", chat.ID, count)
+				message += utils.GetRankingMessage(result, count)
 			}
 			if config.Ranking.Features.Xm {
 				message += "羡慕排行榜\n"
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "xm"), 10) + "\n"
-				result := store.GetRanking("xm", chat.ID, count)
-				for i, val := range result {
-					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条")
-					if i == 0 {
-						message += "**"
-					}
-					message += "> " + refmsg
-					if i == len(result)-1 {
-						message += "||"
-					}
-					message += "\n"
-				}
+				result, count := store.GetRanking("xm", chat.ID, count)
+				message += utils.GetRankingMessage(result, count)
 			}
 			b.SendMessage(ctx, &bot.SendMessageParams{
 				ChatID:    chat.ID,

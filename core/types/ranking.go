@@ -5,3 +5,8 @@ type RankingList struct {
 	Count int64
 	Id    int64
 }
+
+type RankingData struct {
+	TotalMessages int64
+	TotalUsers    int
+}
