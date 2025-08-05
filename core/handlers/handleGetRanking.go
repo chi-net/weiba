@@ -24,19 +24,16 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 			message := ""
 			if config.Ranking.Global {
 				message += "水群排行榜\n"
-				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "global"), 10) + "\n"
 				result, count := store.GetRanking("global", chat.ID, count)
 				message += utils.GetRankingMessage(result, count)
 			}
 			if config.Ranking.Features.Cai {
 				message += "卖菜排行榜\n"
-				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "cai"), 10) + "\n"
 				result, count := store.GetRanking("cai", chat.ID, count)
 				message += utils.GetRankingMessage(result, count)
 			}
 			if config.Ranking.Features.Xm {
 				message += "羡慕排行榜\n"
-				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "xm"), 10) + "\n"
 				result, count := store.GetRanking("xm", chat.ID, count)
 				message += utils.GetRankingMessage(result, count)
 			}
