@@ -27,11 +27,15 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "global"), 10) + "\n"
 				result := store.GetRanking("global", chat.ID, count)
 				for i, val := range result {
-					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n")
+					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条")
 					if i == 0 {
 						message += "**"
 					}
 					message += "> " + refmsg
+					if i == len(result)-1 {
+						message += "||"
+					}
+					message += "\n"
 				}
 				message += "\n"
 			}
@@ -40,11 +44,15 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "cai"), 10) + "\n"
 				result := store.GetRanking("cai", chat.ID, count)
 				for i, val := range result {
-					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n")
+					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条")
 					if i == 0 {
 						message += "**"
 					}
 					message += "> " + refmsg
+					if i == len(result)-1 {
+						message += "||"
+					}
+					message += "\n"
 				}
 				message += "\n"
 			}
@@ -53,11 +61,15 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				// message += "总消息数:" + strconv.FormatInt(store.GetGroupRecordedMessages(chat.ID, "xm"), 10) + "\n"
 				result := store.GetRanking("xm", chat.ID, count)
 				for i, val := range result {
-					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条\n")
+					refmsg := bot.EscapeMarkdown(strconv.Itoa(i+1) + ". " + val.Name + ": " + strconv.FormatInt(val.Count, 10) + "条")
 					if i == 0 {
 						message += "**"
 					}
 					message += "> " + refmsg
+					if i == len(result)-1 {
+						message += "||"
+					}
+					message += "\n"
 				}
 			}
 			b.SendMessage(ctx, &bot.SendMessageParams{
