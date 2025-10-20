@@ -29,6 +29,7 @@ type ConfigurationWhitelistData struct {
 	MonitorMembers    []int64 `yaml:"monitor_members"`
 	UnpinChannelPosts []int64 `yaml:"unpin_channel_posts"`
 	Ranking           []int64 `yaml:"ranking"`
+	Tietie            []int64 `yaml:"tietie"`
 }
 
 type ConfigurationWhiteListMonitorMembersData struct {

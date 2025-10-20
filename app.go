@@ -183,7 +183,15 @@ func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
 
 	if update.Message != nil && (update.Message.Chat.Type == models.ChatTypeGroup || update.Message.Chat.Type == models.ChatTypeSupergroup) {
 		if config.Features.Tietie && update.Message.Text != "" {
-			handlers.HandleTietie(ctx, b, update)
+			if len(config.Whitelists.Tietie) != 0 {
+				for _, val := range config.Whitelists.Tietie {
+					if update.Message.Chat.ID == val {
+						handlers.HandleTietie(ctx, b, update)
+					}
+				}
+			} else {
+				handlers.HandleTietie(ctx, b, update)
+			}
 		}
 		if config.Features.Ranking {
 			handlers.HandleGroupMessage(ctx, b, update, config)
