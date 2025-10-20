@@ -37,6 +37,7 @@ func GetRankingHandler(ctx context.Context, b *bot.Bot, update *models.Update, c
 				result, count := store.GetRanking("xm", chat.ID, count)
 				message += utils.GetRankingMessage(result, count)
 			}
+			// fmt.Println(message)
 			b.SendMessage(ctx, &bot.SendMessageParams{
 				ChatID:    chat.ID,
 				Text:      message,
