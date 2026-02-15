@@ -23,6 +23,8 @@ var authmaps = types.AuthMaps{
 	Steps:         make(map[int64]int64),
 }
 
+var safetyMonitor = types.SafetyMonitor{}
+
 var data types.ImportedGICAuthData
 var config types.YmlConfigurationData
 
@@ -70,6 +72,7 @@ func main() {
 		config.Features.Tietie, _ = strconv.ParseBool(getEnv("TIETIE", "true"))
 		config.Features.Waifu, _ = strconv.ParseBool(getEnv("WAIFU", "false"))
 		config.Features.Ranking, _ = strconv.ParseBool(getEnv("RANKING", "false"))
+		config.Features.SafetyMonitor, _ = strconv.ParseBool(getEnv("SAFETY_MONITOR", "false"))
 	}
 
 	if config.Features.GicAuth {
@@ -81,7 +84,7 @@ func main() {
 		}
 	}
 
-	if (config.Features.AnonymousChat || config.Features.Debug) && config.AdminUID == -1 {
+	if (config.Features.AnonymousChat || config.Features.Debug || config.Features.SafetyMonitor) && config.AdminUID == -1 {
 		panic("You don't set any administrator UID for features that needs it!")
 	}
 
@@ -117,6 +120,7 @@ func main() {
 			"chat_join_request",
 			"message",
 			"channel_post",
+			"callback_query",
 		}),
 	}
 
@@ -152,11 +156,22 @@ func main() {
 			handlers.CloseChatHandler(ctx, b, update, config, authmaps)
 		})
 
+	// 启动安全监控
+	if config.Features.SafetyMonitor {
+		go handlers.SafetyMonitorHandler(ctx, b, config, &safetyMonitor)
+	}
+
 	// start the bot
 	b.Start(ctx)
 }
 
 func handler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	// handle safety monitor callbacks
+	if config.Features.SafetyMonitor && update.CallbackQuery != nil {
+		handlers.HandleSafetyCallback(ctx, b, update, config, &safetyMonitor)
+		return
+	}
+
 	// checkout channel monitor status
 	if config.AdminUID != -1 && config.Features.MonitorMembers && update.ChatMember != nil {
 		handlers.MonitorStatus(ctx, b, update, config)

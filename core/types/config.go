@@ -22,6 +22,7 @@ type ConfigurationFeaturesData struct {
 	Tietie            bool `yaml:"tietie"`
 	Waifu             bool `yaml:"waifu"`
 	Ranking           bool `yaml:"ranking"`
+	SafetyMonitor     bool `yaml:"safety_monitor"`
 }
 
 type ConfigurationWhitelistData struct {
@@ -30,6 +31,7 @@ type ConfigurationWhitelistData struct {
 	UnpinChannelPosts []int64 `yaml:"unpin_channel_posts"`
 	Ranking           []int64 `yaml:"ranking"`
 	Tietie            []int64 `yaml:"tietie"`
+	MonitorStatus     []int64 `yaml:"monitor_status"`
 }
 
 type ConfigurationWhiteListMonitorMembersData struct {

@@ -45,6 +45,10 @@ features:
   debug: true
   # If you want to open ranking system, your data will be recorded in sqlite database.
   ranking: true
+  # Safety monitor feature
+  # Send periodic safety check messages to admin during 8-22 hours (UTC+8)
+  # If admin doesn't respond or clicks alert, send emergency message to monitor groups
+  safety_monitor: false
 
 # ranking section[You can specify categories in the future?]
 ranking:
@@ -70,4 +74,7 @@ whitelists:
   monitor_members:
     - -1000000000000
   unpin_channel_posts:
+    - -1000000000000
+  # Groups to receive safety monitor alerts when admin is in danger
+  monitor_status:
     - -1000000000000
